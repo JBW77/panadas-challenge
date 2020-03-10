@@ -1,0 +1,99 @@
+# Dependencies and Setup
+import pandas as pd
+
+# File to Load (Remember to Change These)
+file_to_load = "Resources/purchase_data.csv"
+
+# Read Purchasing File and store into Pandas data frame
+purchase_data = pd.read_csv(file_to_load)
+purchase_data
+
+#total players
+total_players = len(purchase_data["SN"].value_counts())
+print(total_players)
+#print table
+table_of_players = pd.DataFrame({"Total Players": [total_players]})
+print(table_of_players)
+
+#number of unique items          ------ I have 179 s/b 183  clean first?
+unique_items = len(purchase_data["Item ID"].unique())
+print(unique_items)
+
+#average price
+average_price = purchase_data["Price"].mean()
+print(average_price)
+
+#number of purchases
+number_purchases = purchase_data["Purchase ID"].count()
+print(number_purchases)
+
+#total revenue
+total_revenue = purchase_data["Price"].sum()
+print(total_revenue)
+
+#Summary Table Part 2
+summary_table = pd.DataFrame({"Number of Unique Items": [unique_items],
+                              "Average Price": [average_price],
+                              "Number of Purchases": [number_purchases],
+                              "Total Revenue": [total_revenue]})
+print(summary_table)
+
+#total males
+males_df = purchase_data.loc[(purchase_data["Gender"] == "Male")]
+total_males =len(males_df)
+#print(total_males)
+percent_males = (total_males/total_players)*100
+#print(percent_males)
+
+#total females
+females_df = purchase_data.loc[(purchase_data["Gender"] == "Female")]
+total_females =len(females_df)
+#print(total_females)
+percent_females = (total_females/total_players)*100
+#print(percent_females)
+
+#total other/non-disclosed
+other_gender_df = purchase_data.loc[(purchase_data["Gender"] == "Other / Non-Disclosed")]
+total_other_gender =len(other_gender_df)
+#print(total_other_gender)
+percent_other_gender = (total_other_gender/total_players)*100
+#print(percent_other_gender)
+
+summary_table2 = pd.DataFrame({"Total Count": [total_males,total_females,total_other_gender],
+                              "Percentage of Players": [percent_males,percent_females,percent_other_gender]})
+                           
+print(summary_table2)
+
+female_sum = purchase_data.loc[(purchase_data["Gender"] == "Female")]
+fs =female_sum.count()
+male_sum = purchase_data.loc[(purchase_data["Gender"] == "Male")]
+ms = male_sum.count()
+other_sum = purchase_data.loc[(purchase_data["Gender"] == "Other ")]
+os=other_sum.count()
+
+avg_FemalePurchasePrice = purchase_data.loc[(purchase_data["Gender"] == "Female")]
+afpp = avg_FemalePurchasePrice["Price"].mean()
+avg_MalePurchasePrice = purchase_data.loc[(purchase_data["Gender"] == "Male")]
+ampp = avg_MalePurchasePrice["Price"].mean()
+avg_OtherPurchasePrice = purchase_data.loc[(purchase_data["Gender"] == "Other")]
+aopp=avg_OtherPurchasePrice["Price"].mean()
+
+total_FemalePP = purchase_data.loc[(purchase_data["Gender"] == "Female")]
+tfp=total_FemalePP["Price"].sum()
+total_MalePP = purchase_data.loc[(purchase_data["Gender"] == "Male")]
+tmp=total_MalePP["Price"].sum()
+total_OtherPP = purchase_data.loc[(purchase_data["Gender"] == "Other")]
+top=total_OtherPP["Price"].sum()
+
+sumtab =  pd.DataFrame({"Purchase Count": [fs,ms,os],
+                       "Average Purchase Price":[afpp,ampp,aopp],
+                        "Total Purchase Value":[tfp,tmp,top]})
+sumtab
+
+purchase_data["Age"].max()
+purchase_data["Age"].min()
+bins = [0,10,20,30,40,50]
+group_labels = ["0 to 9","10 to 19", "20 to 29", "30 to 39", "40 to 49"]
+purchase_data["View Group"] = pd.cut(purchase_data["Age"],bins,labels=group_labels).head()
+purchase_group = purchase_data.groupby("View Group")
+print(purchase_group["Age"].count())
